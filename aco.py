@@ -61,7 +61,7 @@ class ACO(object):
                 ant._update_pheromone_delta()
             # update pheromone matrix at the end of the iteration
             self._update_pheromone(graph, ants)
-            print('iteration #{}, best cost: {}, path: {}'.format(iter, best_cost, best_solution))
+            #print('iteration #{}, best cost: {}, path: {}'.format(iter, best_cost, best_solution))
         return best_solution, best_cost
 
 
