@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 
 class Graph(object):
@@ -35,10 +36,18 @@ class ACO(object):
 
     def _update_pheromone(self, graph: Graph, ants: list):
         # can be re-written to not use enumerate
+        '''
         for i, row in enumerate(graph.pheromone):
             for j, col in enumerate(row):
                 # see pheromone update formula
                 graph.pheromone[i][j] *= self.rho
+                for ant in ants:
+                    graph.pheromone[i][j] += ant.pheromone_delta[i][j]
+                    '''
+        for i in range(len(graph.pheromone)):
+            for j in range(len(graph.pheromone[i])):
+                # see pheromone update formula
+                graph.pheromone[i][j] *= (1.0 - self.rho)
                 for ant in ants:
                     graph.pheromone[i][j] += ant.pheromone_delta[i][j]
 
@@ -88,21 +97,39 @@ class _Ant(object):
         probabilities = [0 for i in range(self.graph.rank)]  # probabilities for moving to a node in the next step
         for i in range(self.graph.rank):
             # no need to use try and catch: use if instead
-            try:
-                self.allowed.index(i)  # test if allowed list contains i
-                probabilities[i] =  (self.graph.pheromone[self.current][i] ** self.colony.alpha * \
-                                    self.eta[self.current][i] ** self.colony.beta) / denominator
-            except ValueError:
-                pass  # do nothing
+            if i in self.allowed:
+            #try:
+                #self.allowed.index(i)  # test if allowed list contains i
+                probabilities[i] =  (self.graph.pheromone[self.current][i] ** self.colony.alpha * self.eta[self.current][i] ** self.colony.beta) / denominator
+            #except ValueError:
+            #    pass  # do nothing
         # select next node by probability roulette
         # see if other probabilistic method can be used (youtube video?)
         selected = 0
+        '''
         rand = random.random()
         for i, probability in enumerate(probabilities):
             rand -= probability
             if rand <= 0:
                 selected = i
+                break  
+        '''
+
+        # another implementation of random roulette:
+        # Roulette Wheel Selection or Stochastic Acceptance: his method ensures that nodes with higher probabilities are more likely to be selected, but still allows for some randomness.
+        # Calculate cumulative probabilities
+        cum_probs = [sum(probabilities[:i+1]) for i in range(len(probabilities))]
+
+        # Choose a random number between 0 and the sum of probabilities
+        rand_num = random.uniform(0, cum_probs[-1]) # cum_probs[-1] should be 1 because probabilities are normalized (they all add to 1)
+
+        # Find the index of the node whose cumulative probability range
+        # contains the random number
+        for i, cum_prob in enumerate(cum_probs):
+            if rand_num <= cum_prob:
+                selected = i
                 break
+        
         # update allowed, tabu (ant solution), ant cost and current city
         self.allowed.remove(selected)
         self.tabu.append(selected)
@@ -111,9 +138,9 @@ class _Ant(object):
 
     def _update_pheromone_delta(self):
         self.pheromone_delta = [[0 for j in range(self.graph.rank)] for i in range(self.graph.rank)]
-        for _ in range(1, len(self.tabu)):
-            i = self.tabu[_ - 1]
-            j = self.tabu[_]
+        for ii in range(1, len(self.tabu)):
+            i = self.tabu[ii - 1]
+            j = self.tabu[ii]
 
             # maybe we can remove this (and remove strategy parameter)
             if self.colony.update_strategy == 1:  # ant-quality system
