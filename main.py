@@ -49,7 +49,10 @@ def main():
     # Graph instantiation: The Graph is just the Distance Matrix. The Graph instance includes a Pheromone Matrix that will be updated in each gen (iteration)
     graph = Graph(cost_matrix, rank)
 
-    # 2. FIND SOLUTIONS
+
+    # 2. PARAMETERS TUNNING WITH RANDOM SEARCH
+
+    # 3. DO EXPERIMENTS WITH SELECTED PARAMETERS, TAKE AVERAGES AND STD
 
     # ACO instantiation
     aco = ACO(ant_count=80, iterations=100, alpha=1.0, beta=10.0, rho=0.5, q=10, strategy=2)
