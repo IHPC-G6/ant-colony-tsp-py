@@ -7,24 +7,32 @@ from plot import plot
 from mst import MST
 
 # calculate the distance (cost) between two cities
-def distance(city1: dict, city2: dict):
-    return math.sqrt((city1['x'] - city2['x']) ** 2 + (city1['y'] - city2['y']) ** 2)
+#def distance(city1: dict, city2: dict):
+#    return math.sqrt((city1['x'] - city2['x']) ** 2 + (city1['y'] - city2['y']) ** 2)
 
+def distance(city1: tuple, city2: tuple):
+    return math.sqrt((city1[0] - city2[0]) ** 2 + (city1[1] - city2[1]) ** 2)
 
 def main():
 
     # 1. GRAPH CONSTRUCTION
 
     # load cities
-    cities = []
-    points = [] # just for plot
+    #cities = []
+    #points = [] # just for plot
     with open('./data/chn31.txt') as f:
         lines = f.readlines()
+        '''
         for line in lines:
             city = line.split(' ')
             # doesn't need to be modeled with dictionaries, arrays are enough
             cities.append(dict(index=int(city[0]), x=int(city[1]), y=int(city[2])))
             points.append((int(city[1]), int(city[2])))
+        '''
+        cities = [0] * len(lines)
+        for i in range(len(lines)):
+            city = lines[i].split(' ')
+            cities[i] = (int(city[1]), int(city[2]))
     rank = len(cities)
     print(f'Cities: {rank}')
     #print(cities)
@@ -52,6 +60,7 @@ def main():
     # Print and Plot Results
     print('cost: {}, path: {}'.format(cost, path))
     #plot(points, path)
+    plot(cities, path)
 
     '''
     # To se performance based on number of ants (number of iterations doesn't seem to improve performance)
