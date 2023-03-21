@@ -6,6 +6,6 @@ Solve TSP using Ant Colony Optimization in Python 3
 * matplotlib
 
 ### Usage
-Run `python main.py` to see the results.
+Run `python main.py` to see the result.
 
 ![](https://ooo.0o0.ooo/2017/04/19/58f75b7474f6c.png)
