@@ -45,6 +45,7 @@ def main():
             row.append(distance(cities[i], cities[j]))
         cost_matrix.append(row)
 
+    #print([(sorted(row)[1], max(row)) for row in cost_matrix]) # print min and max element of row, not 0.0 included
 
     # Graph instantiation: The Graph is just the Distance Matrix. The Graph instance includes a Pheromone Matrix that will be updated in each gen (iteration)
     graph = Graph(cost_matrix, rank)
